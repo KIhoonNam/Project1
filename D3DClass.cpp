@@ -376,9 +376,26 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
         return false;
     }
 
-    return true;
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+
+    //ImGui::StyleColorsClassic();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplDX11_Init(m_device, m_deviceContext);
+    ImGui::StyleColorsDark();
+
+
 
     return true;
+
 }
 
 
@@ -494,6 +511,11 @@ ID3D11Device* D3DClass::GetDevice()
 ID3D11DeviceContext* D3DClass::GetDeviceContext()
 {
     return m_deviceContext;
+}
+
+ID3D11RenderTargetView* D3DClass::GetRenderTargetView()
+{
+    return m_renderTargetView;
 }
 
 

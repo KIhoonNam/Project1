@@ -1,16 +1,24 @@
 ﻿#include "Stdafx.h"
+#include "TimerClass.h"
 #include "Cameraclass.h"
 
 
 CameraClass::CameraClass()
-{
-    m_position = XMFLOAT3(0.0f, 0.0f, 0.0f);;
-    m_rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+{  
+
+    
+
+    m_time = new TimerClass;
+
+    // 위쪽을 가리키는 벡터를 설정합니다.
+   
+
 }
 
 
 CameraClass::CameraClass(const CameraClass& other)
 {
+
 }
 
 
@@ -24,15 +32,68 @@ void CameraClass::SetPosition(float x, float y, float z)
     m_position.x = x;
     m_position.y = y;
     m_position.z = z;
+
+   
 }
 
 
 void CameraClass::SetRotation(float x, float y, float z)
 {
+   
     m_rotation.x = x;
     m_rotation.y = y;
     m_rotation.z = z;
+
+  
 }
+
+void CameraClass::RoationMatrix(float rotationx,float rotationy,float rotationz)
+{
+    m_rotation.x = rotationx;
+    m_rotation.y = rotationy;
+    m_rotation.z = rotationz;
+
+    
+}
+
+void CameraClass::SetView()
+{
+
+
+  
+}
+
+
+
+void CameraClass::MoveFront(float position,float rotation)
+{
+    XMVECTOR Direction;
+    Direction = lookAtVector - positionVector;
+    XMVector3Normalize(Direction);
+    XMVECTOR set = position * Direction;
+
+    XMStoreFloat3(&lookAt, set);
+    XMStoreFloat3(&m_position, set);
+
+
+
+
+    
+}
+
+void CameraClass::MoveRight(float position)
+{
+    //XMVECTOR UpNormal, ForwardNormal, Direction, Croos;
+    //XMVector3Normalize(XMVector3Cross(UpNormal, upVector));
+    //XMVector3Normalize(XMVector3Cross(ForwardNormal, (lookAtVector - positionVector)));
+    //Croos = XMVector3Cross(ForwardNormal, UpNormal);
+    //XMVector3Cross(Direction, Croos);
+    //XMVector3Normalize(Direction);
+    //lookAtVector += position * Direction;
+    //positionVector += position * Direction;
+}
+
+
 
 
 XMFLOAT3 CameraClass::GetPosition()
@@ -49,16 +110,14 @@ XMFLOAT3 CameraClass::GetRotation()
 
 void CameraClass::Render()
 {
-    XMFLOAT3 up, position, lookAt;
-    XMVECTOR upVector, positionVector, lookAtVector;
-    float yaw, pitch, roll;
-    XMMATRIX rotationMatrix;
 
-
-    // 위쪽을 가리키는 벡터를 설정합니다.
     up.x = 0.0f;
     up.y = 1.0f;
     up.z = 0.0f;
+
+    lookAt.x = 0;
+    lookAt.y = 0.0f;
+    lookAt.z = 1.0f;
 
     // XMVECTOR 구조체에 로드한다.
     upVector = XMLoadFloat3(&up);
@@ -70,9 +129,7 @@ void CameraClass::Render()
     positionVector = XMLoadFloat3(&position);
 
     // 기본적으로 카메라가 찾고있는 위치를 설정합니다.
-    lookAt.x = 0;
-    lookAt.y = 0.0f;
-    lookAt.z = 1.0f;
+   
 
     // XMVECTOR 구조체에 로드한다.
     lookAtVector = XMLoadFloat3(&lookAt);
@@ -89,8 +146,9 @@ void CameraClass::Render()
     lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);
     upVector = XMVector3TransformCoord(upVector, rotationMatrix);
 
-    // 회전 된 카메라 위치를 뷰어 위치로 변환합니다.
-    lookAtVector = XMVectorAdd(positionVector, lookAtVector);
+  
+
+  
 
     // 마지막으로 세 개의 업데이트 된 벡터에서 뷰 행렬을 만듭니다.
     m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);

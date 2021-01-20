@@ -15,7 +15,12 @@ public:
     bool Frame();
     bool IsLeftArrowPressed();
     bool IsRightArrowPressed();
+    bool IsWPressed();
+    bool IsSPressed();
+    bool IsAPressed();
+    bool IsDPressed();
     bool IsEscapePressed();
+    float IsRotation();
     void GetMouseLocation(int&, int&);
     bool IsKeyDown(unsigned int);
 
@@ -33,7 +38,7 @@ private:
     DIMOUSESTATE m_mouseState;
     
     
-
+    int mouseMove = 0;
     int m_screenWidth = 0;
     int m_screenHeight = 0;
     int m_mouseX = 0;

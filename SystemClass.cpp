@@ -27,7 +27,6 @@ bool SystemClass::Initialize()
     // 윈도우 창 가로, 세로 넓이 변수 초기화
     int screenWidth = 0;
     int screenHeight = 0;
-
     // 윈도우 생성 초기화
     InitializeWindows(screenWidth, screenHeight);
 
@@ -148,6 +147,10 @@ void SystemClass::Shutdown()
         delete m_Input;
         m_Input = 0;
     }
+    // Cleanup
+    ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
 
     // Window 종료 처리
     ShutdownWindows();
@@ -159,10 +162,14 @@ void SystemClass::Run()
     // 메시지 구조체 생성 및 초기화
     MSG msg;
     ZeroMemory(&msg, sizeof(MSG));
-
+ 
+   
     // 사용자로부터 종료 메시지를 받을때까지 메시지루프를 돕니다
     while (true)
     {
+
+
+
         // 윈도우 메시지를 처리합니다
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
@@ -188,11 +195,12 @@ void SystemClass::Run()
             break;
         }
     }
+ 
 }
 
 
 bool SystemClass::Frame()
-{  
+{     
     // 입력 프레임 처리를 수행합니다
     if (!m_Input->Frame())
     {
@@ -202,15 +210,35 @@ bool SystemClass::Frame()
     // 업데이트 된 위치를 계산하기 위한 프레임 시간을 설정합니다.
     m_Position->SetFrameTime(m_Timer->GetTime());
 
+    float mouseMove = m_Input->IsRotation();
+    m_Position->TurnLeft(mouseMove);
+    m_Position->TurnRight(mouseMove);
     // 왼쪽 또는 오른쪽 화살표 키를 눌렀는지 확인하십시오. 그렇지 않으면 카메라를 적절히 회전하십시오.
-    bool keyDown = m_Input->IsLeftArrowPressed();
-    m_Position->TurnLeft(keyDown);
+ 
+ 
 
-    keyDown = m_Input->IsRightArrowPressed();
-    m_Position->TurnRight(keyDown);
+   bool keyDown = m_Input->IsWPressed();
+    m_Position->MoveFront(keyDown);
 
-    float rotationY = 0.0f;
+    keyDown = m_Input->IsSPressed();
+    m_Position->MoveBack(keyDown);
+
+    keyDown = m_Input->IsAPressed();
+    m_Position->MoveLeft(keyDown);
+    
+    keyDown = m_Input->IsDPressed();
+    m_Position->MoveRight(keyDown);
+
+    float positionX = 0.0f;
+    float positionZ = 0.0f;
+
+    positionX = m_Position->GetPosX();
+    positionZ = m_Position->GetPosZ();
+
+    float rotationY = 0;
     m_Position->GetRotation(rotationY);
+
+
     // 시스템 통계를 업데이트 합니다
     m_Timer->Frame();
     m_Fps->Frame();
@@ -223,17 +251,20 @@ bool SystemClass::Frame()
     m_Input->GetMouseLocation(mouseX, mouseY);
 
     // 그래픽 객체의 Frame을 처리합니다
-    if (!m_Graphics->Frame(mouseX, mouseY, m_Fps->GetFps(), m_Cpu->GetCpuPercentage(), m_Timer->GetTime(),rotationY))
+    if (!m_Graphics->Frame(mouseX, mouseY, m_Fps->GetFps(), m_Cpu->GetCpuPercentage(), m_Timer->GetTime(),rotationY,positionX,positionZ))
     {
         return false;
     }
 
     return m_Graphics->Render((float)XM_PI * 0.01f);
+
 }
 
-
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
+    if (ImGui_ImplWin32_WndProcHandler(hwnd, umsg, wparam, lparam))
+        return true;
     return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 

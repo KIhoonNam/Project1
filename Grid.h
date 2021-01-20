@@ -1,10 +1,11 @@
 #pragma once
+#pragma once
 
 class TextureClass;
 class ColorShaderClass;
 
 
-class BoxClass : public AlignedAllocationPolicy<16>
+class GridClass : public AlignedAllocationPolicy<16>
 {
 private:
     struct VertexType
@@ -20,11 +21,11 @@ private:
         float nx, ny, nz;
     };
 public:
-    BoxClass();
-    BoxClass(const BoxClass&);
-    ~BoxClass();
+    GridClass();
+    GridClass(const GridClass&);
+    ~GridClass();
 
-    bool Initialize(ID3D11Device*,WCHAR*, HWND);
+    bool Initialize(ID3D11Device*, WCHAR*, HWND);
     void Shutdown();
     void Render(ID3D11DeviceContext*);
 
@@ -36,7 +37,7 @@ private:
     void ShutdownBuffers();
     void RenderBuffers(ID3D11DeviceContext*);
 
-    bool LoadTexture(ID3D11Device*, HWND,WCHAR*);
+    bool LoadTexture(ID3D11Device*, HWND, WCHAR*);
     void ReleaseTexture();
 
     bool LoadModel(char*);

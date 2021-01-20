@@ -28,6 +28,9 @@
     <Filter Include="헤더 파일\ShaderHeader">
       <UniqueIdentifier>{c60da68d-7729-409c-8cbc-7dc9be3cdae2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Imgui">
+      <UniqueIdentifier>{eddd593f-e9b9-467e-ab9e-0450661e9a17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -112,6 +115,30 @@
       <Filter>소스 파일\MainCpp</Filter>
     </ClCompile>
     <ClCompile Include="Debugwindowclass.cpp">
+      <Filter>소스 파일\ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx11.cpp">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
       <Filter>소스 파일\ShaderClass</Filter>
     </ClCompile>
   </ItemGroup>
@@ -209,39 +236,35 @@
     <ClInclude Include="Cameraclass.h">
       <Filter>헤더 파일\MainHeader</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Texture.ps">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="Texture.vs">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="LightVertexShader.hlsl">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="LightPixelShader.hlsl">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="FontVS.hlsl">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="FontPS.hlsl">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="MultitextureVertex.hlsl">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="MultitexturePixel.hlsl">
-      <Filter>FX</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Color.ps">
-      <Filter>FX</Filter>
-    </None>
-    <None Include="Color.vs">
-      <Filter>FX</Filter>
-    </None>
+    <ClInclude Include="imconfig.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx11.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

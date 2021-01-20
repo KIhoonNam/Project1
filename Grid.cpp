@@ -1,97 +1,87 @@
 #include "stdafx.h"
 #include "GeometryGenerator.h"
 #include "TextureClass.h"
-#include "Boxclass.h"
+#include "Grid.h"
 #include <fstream>
 
-
-BoxClass::BoxClass()
-{
-    m_VC = 0;
-    m_IC = 0;
-}
-
-
-BoxClass::BoxClass(const BoxClass& other)
-{
-    m_VC = 0;
-    m_IC = 0;
-}
-
-
-BoxClass::~BoxClass()
+GridClass::GridClass()
 {
 }
 
-
-bool BoxClass::Initialize(ID3D11Device* device,WCHAR* b,HWND hwnd)
+GridClass::GridClass(const GridClass&)
 {
-    //// 모델 데이터를 로드합니다.
-    //if (!LoadModel(b))
-    //{
-    //    return false;
-    //}
-    if (!InitializeBuffers(device));
-    return LoadTexture(device, hwnd, b);
 }
 
-
-void BoxClass::Shutdown()
+GridClass::~GridClass()
 {
-
-
-    // 버텍스 및 인덱스 버퍼를 종료합니다.
-    ShutdownBuffers();
-
-    ReleaseModel();
 }
 
-
-void BoxClass::Render(ID3D11DeviceContext* deviceContext)
+bool GridClass::Initialize(ID3D11Device* device, WCHAR* b, HWND hwnd)
 {
-    // 그리기를 준비하기 위해 그래픽 파이프 라인에 꼭지점과 인덱스 버퍼를 놓습니다.
-    RenderBuffers(deviceContext);
+	//// 모델 데이터를 로드합니다.
+ //if (!LoadModel(b))
+ //{
+ //    return false;
+ //}
+	
+	if (b != nullptr)
+	{
+		if (!InitializeBuffers(device));
+		return LoadTexture(device, hwnd, b);
+	}
+	else 
+		return !InitializeBuffers(device);
 }
 
-
-int BoxClass::GetIndexCount()
+void GridClass::Shutdown()
 {
-    return m_IC;
+	// 버텍스 및 인덱스 버퍼를 종료합니다.
+	ShutdownBuffers();
+
+	ReleaseModel();
 }
 
-
-ID3D11ShaderResourceView* BoxClass::GetTexture()
+void GridClass::Render(ID3D11DeviceContext* deviceContext)
 {
-    return m_Texture->GetTexture();
+	RenderBuffers(deviceContext);
 }
 
+int GridClass::GetIndexCount()
+{
+	return m_IC;;
+}
 
-bool BoxClass::InitializeBuffers(ID3D11Device* device)
+ID3D11ShaderResourceView* GridClass::GetTexture()
+{
+	return m_Texture->GetTexture();
+}
+
+bool GridClass::InitializeBuffers(ID3D11Device* device)
 {
     GeometryGenerator mesh;
-    GeometryGenerator::MeshData sphere = mesh.CreateSphere(0.5f,100,100);
-    
+    GeometryGenerator::MeshData grid = mesh.CreateGrid(80, 80, 2,2);
+
     // 정점 배열을 만듭니다.
-    std::vector<VertexType> vertices(sphere.Vertices.size());
+    std::vector<VertexType> vertices(grid.Vertices.size());
 
 
     // 인덱스 배열을 만듭니다.
     std::vector<UINT> indices;
-    indices.insert(indices.end(), sphere.Indices32.begin(), sphere.Indices32.end());
+    indices.insert(indices.end(), grid.Indices32.begin(), grid.Indices32.end());
 
     // 정점 배열과 인덱스 배열을 데이터로 읽어옵니다.
-    for (size_t i = 0; i < sphere.Vertices.size(); i++)
+    for (size_t i = 0; i < grid.Vertices.size(); i++)
     {
-        vertices[i].position = sphere.Vertices[i].Position;
-        vertices[i].texture =sphere.Vertices[i].TexC;
-        vertices[i].normal = sphere.Vertices[i].Normal;
+        vertices[i].position = grid.Vertices[i].Position;
+        vertices[i].texture = grid.Vertices[i].TexC;
+        vertices[i].normal = grid.Vertices[i].Normal;
 
     }
 
     // 정적 정점 버퍼의 구조체를 설정합니다.
     D3D11_BUFFER_DESC vertexBufferDesc;
     vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    vertexBufferDesc.ByteWidth = sizeof(VertexType) * sphere.Vertices.size();
+    vertexBufferDesc.ByteWidth = sizeof(VertexType) * grid.Vertices.size();
     vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     vertexBufferDesc.CPUAccessFlags = 0;
     vertexBufferDesc.MiscFlags = 0;
@@ -112,7 +102,7 @@ bool BoxClass::InitializeBuffers(ID3D11Device* device)
     // 정적 인덱스 버퍼의 구조체를 설정합니다.
     D3D11_BUFFER_DESC indexBufferDesc;
     indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    indexBufferDesc.ByteWidth = sizeof(UINT) * sphere.Indices32.size();
+    indexBufferDesc.ByteWidth = sizeof(UINT) * grid.Indices32.size();
     indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     indexBufferDesc.CPUAccessFlags = 0;
     indexBufferDesc.MiscFlags = 0;
@@ -123,7 +113,7 @@ bool BoxClass::InitializeBuffers(ID3D11Device* device)
     indexData.pSysMem = &indices[0];
     indexData.SysMemPitch = 0;
     indexData.SysMemSlicePitch = 0;
-    m_IC = sphere.Indices32.size();
+    m_IC = grid.Indices32.size();
     // 인덱스 버퍼를 생성합니다.
     if (FAILED(device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer)))
     {
@@ -131,13 +121,12 @@ bool BoxClass::InitializeBuffers(ID3D11Device* device)
     }
 
     // 생성되고 값이 할당된 정점 버퍼와 인덱스 버퍼를 해제합니다.
- 
+
 
     return true;
 }
 
-
-void BoxClass::ShutdownBuffers()
+void GridClass::ShutdownBuffers()
 {
     // 인덱스 버퍼를 해제합니다.
     if (m_indexBuffer)
@@ -154,8 +143,7 @@ void BoxClass::ShutdownBuffers()
     }
 }
 
-
-void BoxClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
+void GridClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
     // 정점 버퍼의 단위와 오프셋을 설정합니다.
     UINT stride = sizeof(VertexType);
@@ -171,8 +159,7 @@ void BoxClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
     deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-
-bool BoxClass::LoadTexture(ID3D11Device* device, HWND hwnd,WCHAR* Filename1)
+bool GridClass::LoadTexture(ID3D11Device* device, HWND hwnd, WCHAR* Filename1)
 {
     // 텍스처 오브젝트를 생성한다.
     m_Texture = new TextureClass;
@@ -185,12 +172,12 @@ bool BoxClass::LoadTexture(ID3D11Device* device, HWND hwnd,WCHAR* Filename1)
     m_Texture->Initialize(device, Filename1);
 }
 
-void BoxClass::ReleaseTexture()
+void GridClass::ReleaseTexture()
 {
     m_Texture->Shutdown();
 }
 
-bool BoxClass::LoadModel(char* filename)
+bool GridClass::LoadModel(char* filename)
 {
     // 모델 파일을 엽니다.
     std::ifstream fin;
@@ -247,8 +234,7 @@ bool BoxClass::LoadModel(char* filename)
     return true;
 }
 
-
-void BoxClass::ReleaseModel()
+void GridClass::ReleaseModel()
 {
     if (m_model)
     {

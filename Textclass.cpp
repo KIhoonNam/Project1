@@ -72,7 +72,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
     char Hi[] = "Fps";
 
     // Now update the sentence vertex buffer with the new string information.
-    result = UpdateSentence(m_sentence1,Hi, 300, 100, 1.0f, 1.0f, 1.0f, deviceContext);
+    result = UpdateSentence(m_sentence1,Hi, 500, 300, 1.0f, 1.0f, 1.0f, deviceContext);
     if (!result)
     {
         return false;

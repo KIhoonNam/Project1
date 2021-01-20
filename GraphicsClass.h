@@ -9,6 +9,7 @@ const float SCREEN_NEAR = 0.1f;
 
 class D3DClass;
 class CameraClass;
+class GridClass;
 class ModelClass;
 class LightClass;
 class LightShaderClass;
@@ -32,7 +33,7 @@ public:
 
     bool Initialize(int, int, HWND);
     void Shutdown();
-    bool Frame(int,int,int,int,float,float);
+    bool Frame(int,int,int,int,float,float,float,float);
     bool Render(float);
 
 private:
@@ -42,7 +43,11 @@ private:
 private:
 
     float m_rotationY = 0;
-
+    float m_rotationX = 0;
+    float m_rotationZ = 0;
+    float m_positionX = 0;
+    float m_positionY = 0;
+    float m_positionZ = 0;
     D3DClass* m_Direct3D = nullptr;
     CameraClass* m_Camera = nullptr;
     CameraClass* m_Camera1 = nullptr;
@@ -55,6 +60,7 @@ private:
     TextureShaderClass* m_texture = nullptr;
     TextClass* m_Text = nullptr;
     ModelListClass* m_ModelList = nullptr;
+    GridClass* m_Grid = nullptr;
     FrustumClass* m_Frustum = nullptr;
     RenderTextureClass* m_RenderTexture = nullptr;
     DebugWindowClass* m_DebugWindow = nullptr;

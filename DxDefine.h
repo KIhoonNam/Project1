@@ -19,6 +19,10 @@
 #include "DDSTextureLoader.h"    // DDS 颇老 贸府
 using namespace DirectX;
 
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+
 
 ///////////////////////////
 //  warning C4316 贸府侩  //

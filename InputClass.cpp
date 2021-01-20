@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "TimerClass.h"
 #include "InputClass.h"
 
 
@@ -184,6 +185,7 @@ void InputClass::ProcessInput()
 }
 
 
+
 bool InputClass::IsEscapePressed()
 {
     // escape 키가 현재 눌려지고 있는지 bit값을 계산하여 확인한다.
@@ -193,6 +195,24 @@ bool InputClass::IsEscapePressed()
     }
 
     return false;
+}
+float InputClass::IsRotation()
+{
+    if (mouseMove < m_mouseX)
+    {
+        mouseMove = m_mouseX;
+        return 1;
+    }
+    else if (mouseMove > m_mouseX)
+    {
+        mouseMove = m_mouseX;
+        return -1;
+    }
+    else
+    {
+        mouseMove = m_mouseX;
+        return 0;
+    }
 }
 bool InputClass::IsLeftArrowPressed()
 {
@@ -205,6 +225,42 @@ bool InputClass::IsLeftArrowPressed()
 bool InputClass::IsRightArrowPressed()
 {
     if (m_keyboardState[DIK_RIGHTARROW] & 0x80)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool InputClass::IsWPressed()
+{
+    if (m_keyboardState[DIK_W] & 0x80)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool InputClass::IsSPressed()
+{
+    if (m_keyboardState[DIK_S] & 0x80)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool InputClass::IsAPressed()
+{
+    if (m_keyboardState[DIK_A] & 0x80)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool InputClass::IsDPressed()
+{
+    if (m_keyboardState[DIK_D] & 0x80)
     {
         return true;
     }

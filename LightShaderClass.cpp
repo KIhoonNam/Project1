@@ -50,6 +50,23 @@ bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
     return true;
 }
 
+bool LightShaderClass::Render1(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+    XMMATRIX projectionMatrix, XMFLOAT3 lightDirection, XMFLOAT4 ambientColor,
+    XMFLOAT4 diffuseColor, XMFLOAT3 cameraPosition, XMFLOAT4 specularColor, float specularPower)
+{
+    // 렌더링에 사용할 셰이더 매개 변수를 설정합니다.
+    if (!SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix,nullptr, lightDirection, ambientColor,
+        diffuseColor, cameraPosition, specularColor, specularPower))
+    {
+        return false;
+    }
+
+    // 설정된 버퍼를 셰이더로 렌더링한다.
+    RenderShader(deviceContext, indexCount);
+
+    return true;
+}
+
 
 bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
 {
@@ -349,8 +366,11 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
     // 이제 업데이트 된 값으로 버텍스 쉐이더에서 카메라 상수 버퍼를 설정합니다.
     deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
 
-    // 픽셀 셰이더에서 셰이더 텍스처 리소스를 설정합니다.
-    deviceContext->PSSetShaderResources(0, 1, &texture);
+    if (texture != nullptr)
+    {
+        // 픽셀 셰이더에서 셰이더 텍스처 리소스를 설정합니다.
+        deviceContext->PSSetShaderResources(0, 1, &texture);
+    }
 
     // light constant buffer를 잠글 수 있도록 기록한다.
     if (FAILED(deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource)))
